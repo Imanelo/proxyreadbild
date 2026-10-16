@@ -1,17 +1,8 @@
-// api/sync.ts
-// Deploy this file to Vercel as a Next.js API route (api/sync.ts)
-// Set AIRTABLE_BASE_ID and AIRTABLE_API_KEY in your Vercel project settings
+export default async function handler(req, res) {
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+  const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+  const AIRTABLE_TABLE = 'Idioms';
 
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
-const AIRTABLE_TABLE = 'Idioms';
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -23,8 +14,8 @@ export default async function handler(
   const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}`;
 
   try {
-    const allRecords: any[] = [];
-    let offset: string | undefined;
+    const allRecords = [];
+    let offset;
 
     do {
       const fetchUrl = offset
@@ -44,18 +35,18 @@ export default async function handler(
       offset = data.offset;
     } while (offset);
 
-    const idioms = allRecords.map((r: any) => {
+    const idioms = allRecords.map((r) => {
       const f = r.fields || {};
       return {
-        id: parseInt(f.Id as string, 10) || 0,
-        german: (f['German'] as string) || '',
-        literalMeaning: (f['Literal Meaning'] as string) || '',
-        figurativeMeaning: (f['Figurative Meaning'] as string) || '',
-        germanExample: (f['German Example'] as string) || null,
-        englishExample: (f['English Example'] as string) || null,
-        puzzleEmoji: (f['Puzzle Emoji'] as string) || null,
-        imageKey: (f['Image Key'] as string) || null,
-        imageUrl: (f['Image URL'] as string) || null,
+        id: parseInt(f.Id, 10) || 0,
+        german: f['German'] || '',
+        literalMeaning: f['Literal Meaning'] || '',
+        figurativeMeaning: f['Figurative Meaning'] || '',
+        germanExample: f['German Example'] || null,
+        englishExample: f['English Example'] || null,
+        puzzleEmoji: f['Puzzle Emoji'] || null,
+        imageKey: f['Image Key'] || null,
+        imageUrl: f['Image URL'] || null,
         airtable_record_id: r.id,
         updated_at: Date.now(),
         content_hash: JSON.stringify(f),
