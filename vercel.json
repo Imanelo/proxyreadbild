@@ -1,7 +1,10 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
+  "devCommand": "next dev",
   "installCommand": "npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "routes": [
+    { "src": "/api/sync", "dest": "/pages/api/sync.ts" }
+  ]
 }
